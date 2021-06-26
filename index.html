@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<head>
+  <meta HTTP-EQUIV="pragma" CONTENT="no-cache"> 
+  <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate"> 
+  <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT"> 
+  <meta HTTP-EQUIV="expires" CONTENT="0">
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>家庭网络</title>
+  <link rel="stylesheet" href="css/device.css" type="text/css">
+  <script src="js/echarts.min.js"></script>
+  <script src="js/jquery.min.js" ></script> 
+</head>
+<body>
+<div class="class-dev" id="show-net">
+ <div class='class-title1'>网络设备</div>
+ <div class='class-devsub1'>
+ 电信网关： <font color="green"><span id="show-tywg"></span></font><br>
+ 无线路由： <span id="show-opwendu"></span>
+ </div>
+</div>
+<script>$('#show-ydwg').load('http://xxx/router-tywg?a=rst');</script>
+<script>$('#show-opwendu').load('http://xxx/esp-showlink?a=opwendu');</script>
+<hr align="center" width="100%" size="1" color="#D7D7D7">
+<div class="class-dev" id="show-dev" style="min-width:310px"></div>
+<script>$('#show-dev').load('http://xxx/esp-showlink?a=ondev');</script>
+<hr align="center" width="100%" size="1" color="#D7D7D7">
+<div class='class-dev' id="show-sw1"></div>
+<div class='class-log' id='show-logdiv'><pre id='show-log'></pre></div>
+<script>$('#show-sw1').load('http://xxx/esp-showlink?a=contsw');</script>
+<hr align="center" width="100%" size="1" color="#D7D7D7">
+<div id="show-dev-esp-td.lan" style="width:100%;">
+ <div id="box0" style="width: 50%; min-width:350px; min-height:330px; background-color:white;"></div>
+ <div id="box1" style="width: 50%; min-width:350px; min-height:330px; background-color:white;"></div>
+<div id="box2" style="width: 95%;min-width:350px; min-height:350px; height:400px;"></div>
+<div id="box3" style="width: 95%; min-width:350px; min-height:350px;height:400px;"></div>
+</div>
+<script>
+var myChart0 = echarts.init(document.getElementById('box0'));
+var myChart1 = echarts.init(document.getElementById('box1'));
+        $.get('http://xxx/json?tasknr=2').done(function (resule) {
+    myChart0.setOption({
+    title: {
+                                        text: '卧室温度'
+                                },
+                                tooltip : {
+        formatter: "{a} <br/>{b} : {c}%"
+    },
+            series: [
+        {
+            name: '温度',
+            type: 'gauge',
+            radius: "80%",
+                        min:0,   
+            max:60,
+                        splitNumber:12,
+                        axisLine: {            // 坐标轴线  
+                     lineStyle: {       // 属性lineStyle控制线条样式  
+                     color: [[0.3, '#85BBDF'], [0.4, '#94B735'], [1, '#CF4731']]
+                                }  
+                      },   
+            detail: {formatter:'{value}°C'},
+            data: [{value: resule.Temperature, name: '温度'}]
+        }
+    ]
+                        });
+
+        myChart1.setOption({
+                                title: {
+                                        text: '卧室湿度'
+                                },
+                                tooltip : {
+        formatter: "{a} <br/>{b} : {c}%"
+    },
+            series: [
+        {
+            name: '湿度',
+            type: 'gauge',
+                        min:10,   
+            max:80,
+                        axisLine: {            // 坐标轴线  
+            lineStyle: {       // 属性lineStyle控制线条样式  
+            color: [[0.5, '#BFEFFF'], [0.8, '#87CEFA'], [1, '#6495ED']]}  
+             },   
+            detail: {formatter:'{value}%'},
+            data: [{value: resule.Humidity, name: '湿度'}]
+        }
+    ]
+                        });
+
+                });
+        </script>
+<script>
+var myChart2 = echarts.init(document.getElementById('box2'));
+var myChart3 = echarts.init(document.getElementById('box3'));
+$.get('esp-data.json').done(function (resule) {
+myChart2.setOption({
+                                title: {
+                                        text: '卧室历史温度'
+                                },
+                                tooltip: { trigger: 'axis'},
+                                legend: {
+                                        data:['温度']
+                                },
+calculable : true,
+                xAxis: {
+                 type: 'category',
+                data: resule.time1
+   } , 
+  yAxis:[
+         {
+         axisLabel : {formatter: '{value} °C'}
+         }
+        ],
+series: [{
+        name: '温度',
+                smooth:0.5,
+        type: 'line', 
+            areaStyle: {normal: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#ff9c35'
+                    }, {
+                        offset: 1,
+                        color: 'rgba(0,0,0,0)'
+                    }]),
+            }},
+    itemStyle:{
+            normal:{
+              color:'#fc8a0f', //折点颜色
+              lineStyle:{
+                 color:'#ff9c35' //折线颜色
+                      }
+             }},
+    markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                data: resule.Temperature
+                                }
+            
+                ]
+                        });
+
+myChart3.setOption({
+                                title: {
+                                        text: '卧室历史湿度'
+                                },
+                                tooltip: { trigger: 'axis'},
+                                legend: {
+                                        data:['湿度']
+                                },
+    calculable : true,
+                xAxis: {
+                 type: 'category',
+                data: resule.time1
+   } , 
+    yAxis:[
+         {
+         axisLabel : {formatter: '{value} %'},
+         scale:true
+         }
+        ],
+    series: [{
+        name: '湿度',
+    smooth:0.5,
+        type: 'line', 
+    itemStyle:{
+            normal:{
+              color:'#4F94CD', //折点颜色
+              lineStyle:{
+                 color:'#63B8FF' //折线颜色
+                      }
+             }},
+                                     areaStyle: {normal: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#63B8FF'
+                    }, {
+                        offset: 1,
+                        color: 'rgba(0,0,0,0)'
+                    }]),
+            }},
+    markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                data: resule.Humidity
+                                }
+            
+                ]
+                        });
+});
+</script>
+</body>
+</html>
