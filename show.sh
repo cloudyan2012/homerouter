@@ -5,7 +5,7 @@ echo -e "
 <script>
 \$(document).ready(function(){
   \$('#link02').click(function(){
-          htmlobj=$.ajax({url:'/myweb/neig.log',async:false});
+          htmlobj=$.ajax({url:'neig.log',async:false});
             \$('#show-logdiv2').css('display','block');
               \$('#show-log2').html(htmlobj.responseText);
                                                  });
@@ -45,7 +45,7 @@ echo -e "
 <script>
 \$(document).ready(function(){
  \$('#link01').click(function(){
- htmlobj=$.ajax({url:'/myweb/esp.log',async:false});
+ htmlobj=$.ajax({url:'esp.log',async:false});
  \$('#show-logdiv').css('display','block');
  \$('#show-log').html(htmlobj.responseText);
   });
@@ -88,9 +88,9 @@ echo -e "
    });
   var clickSwitch = function() {
   if (\$('#onoffswitch').is(':checked')) {
-  \$.get('http://xxx/control?cmd=event,TurnOn');
+  \$.get('http://xxxTurnOn');
   } else {
-  \$.get('http://xxx/control?cmd=event,TurnOff');
+  \$.get('http://xxxTurnOff');
   }
   };
   });
